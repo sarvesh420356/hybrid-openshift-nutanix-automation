@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        OCP_API = 'https://api.ocp-nutanix.ntillab.com:6443'
+        OCP_API = 'https://api.lab.ocp.lan:6443'
     }
 
     stages {
