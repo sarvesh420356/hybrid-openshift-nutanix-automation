@@ -39,5 +39,19 @@ pipeline {
                 echo 'Hybrid Automation Environment is Ready.'
             }
         }
+	
+	stage('Nutanix Health Check') {
+   	steps {
+        withCredentials([usernamePassword(
+            credentialsId: 'nutanix-creds',
+            usernameVariable: 'NUTANIX_USERNAME',
+            passwordVariable: 'NUTANIX_PASSWORD'
+        )]) {
+            sh '''
+                ansible-playbook \
+                  -i ansible/inventory.ini \
+                  ansible/nutanix-health.yml
+            '''
+        }	
     }
 }

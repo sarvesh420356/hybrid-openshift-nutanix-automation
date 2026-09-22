@@ -1,0 +1,29 @@
+---
+- name: Prism Element Cluster Health Check
+  hosts: nutanix
+  gather_facts: false
+
+  vars:
+    prism_ip: "{{ ansible_host }}"
+    prism_api: "https://{{ prism_ip }}:9440/PrismGateway/services/rest/v2.0/cluster/"
+
+  tasks:
+
+    - name: Get Cluster Information
+      uri:
+        url: "{{ prism_api }}"
+        method: GET
+        user: "{{ lookup('env','NUTANIX_USERNAME') }}"
+        password: "{{ lookup('env','NUTANIX_PASSWORD') }}"
+        force_basic_auth: yes
+        validate_certs: no
+        return_content: yes
+      register: cluster_info
+
+    - name: Print Cluster Name
+      debug:
+        msg: "{{ cluster_info.json.name }}"
+
+    - name: Print AOS Version
+      debug:
+        msg: "{{ cluster_info.json.version }}"
