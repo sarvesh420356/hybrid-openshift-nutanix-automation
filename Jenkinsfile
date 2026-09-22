@@ -41,17 +41,31 @@ pipeline {
         }
 	
 	stage('Nutanix Health Check') {
-   	steps {
-        withCredentials([usernamePassword(
-            credentialsId: 'nutanix-creds',
-            usernameVariable: 'NUTANIX_USERNAME',
-            passwordVariable: 'NUTANIX_PASSWORD'
-        )]) {
-            sh '''
-                ansible-playbook \
-                  -i ansible/inventory.ini \
-                  ansible/nutanix-health.yml
-            '''
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'nutanix-creds',
+                    usernameVariable: 'NUTANIX_USERNAME',
+                    passwordVariable: 'NUTANIX_PASSWORD'
+                )]) {
+                    sh '''
+                        ansible-playbook \
+                          -i ansible/inventory.ini \
+                          ansible/nutanix-health.yml
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully.'
+        }
+        failure {
+            echo 'Pipeline failed. Check Console Output.'
+        }
+    }
+}
         }	
     }
 }
