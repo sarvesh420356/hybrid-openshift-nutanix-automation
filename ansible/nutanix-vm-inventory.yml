@@ -1,0 +1,29 @@
+---
+- name: Nutanix VM Inventory
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    prism_ip: 192.168.200.72
+
+  tasks:
+    - name: Get VM Inventory from Prism Element
+      uri:
+        url: "https://{{ prism_ip }}:9440/PrismGateway/services/rest/v2.0/vms/"
+        method: GET
+        user: "{{ lookup('env','NUTANIX_USERNAME') }}"
+        password: "{{ lookup('env','NUTANIX_PASSWORD') }}"
+        force_basic_auth: yes
+        validate_certs: no
+        return_content: yes
+      register: vm_inventory
+
+    - name: Display VM Inventory
+      debug:
+        msg:
+          - "VM Name: {{ item.name }}"
+          - "Power State: {{ item.power_state }}"
+          - "vCPUs: {{ item.num_vcpus }}"
+          - "Memory (GB): {{ (item.memory_mb / 1024) | round(2) }}"
+          - "VM UUID: {{ item.uuid }}"
+      loop: "{{ vm_inventory.json.entities }}"
