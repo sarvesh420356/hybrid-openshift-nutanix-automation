@@ -27,3 +27,11 @@
     - name: Print AOS Version
       debug:
         msg: "{{ cluster_info.json.version }}"
+
+    - name: Print Cluster UUID
+      debug:
+        msg: "{{ cluster_info.json.uuid }}"
+
+    - name: Display Cluster Health
+      debug:
+        msg: "{{ cluster_info.json.cluster_redundancy_state }}"
