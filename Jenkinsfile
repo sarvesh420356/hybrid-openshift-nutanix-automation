@@ -69,7 +69,7 @@ pipeline {
 	    }
 	}
 	
-	stage('Nutanix VM inventory')
+	stage('Nutanix VM inventory') {
 	    steps {
 		withCredentials([usernamePassword(
 		    credentialsId: 'nutanix-creds',
