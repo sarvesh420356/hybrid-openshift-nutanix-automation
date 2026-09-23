@@ -55,6 +55,20 @@ pipeline {
                 }
             }
         }
+	stage('Nutanix Host Health Check') {
+	    steps {
+		withCredentials([usernamePassword(
+		    credentialsId: 'nutanix-creds',
+		    usernameVariable: 'NUTANIX_USERNAME',
+		    passwordVariable: 'NUTANIX_PASSWORD'
+		)]) {
+		    sh '''
+			ansible-playbook ansible/nutanix-host-health.yml
+		    '''
+		}
+	    }
+	}
+		
     }
 
     post {

@@ -1,0 +1,29 @@
+---
+- name: AHV Host Health Check
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    prism_ip: "192.168.200.72"
+
+  tasks:
+    - name: Get AHV Hosts Information
+      uri:
+        url: "https://{{ prism_ip }}:9440/PrismGateway/services/rest/v2.0/hosts/"
+        method: GET
+        user: "{{ lookup('env','NUTANIX_USERNAME') }}"
+        password: "{{ lookup('env','NUTANIX_PASSWORD') }}"
+        force_basic_auth: yes
+        validate_certs: no
+        return_content: yes
+      register: host_info
+
+    - name: Display AHV Host information
+      debug:
+        msg:
+          - "Host Name: {{ item.name }}"
+          - "Host IP: {{ item.hypervisor_address }}"
+          - "Status: {{ item.state }}"
+          - "CPU Cores: {{ item.num_cpu_cores }}"
+          - "Memory GB: {{ (item.memory_capacity_in_bytes / 1073741824) | round(2) }}"
+      loop: "{{ host_info.json.entities }}"
