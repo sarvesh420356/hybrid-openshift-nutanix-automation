@@ -68,7 +68,21 @@ pipeline {
 		}
 	    }
 	}
-		
+	
+	stage('Nutanix VM inventory')
+	    steps {
+		withCredentials([usernamePassword(
+		    credentialsId: 'nutanix-creds',
+		    usernameVariable: 'NUTANIX_USERNAME',
+		    passwordVariable: 'NUTANIX_PASSWORD'
+		)]) {
+		    sh '''
+			ansible-playbook ansible/nutanix-vm-inventory.yml
+		    '''
+		}
+	    }
+	}
+			
     }
 
     post {
